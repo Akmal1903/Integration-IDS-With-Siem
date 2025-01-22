@@ -1,63 +1,151 @@
 # Integration-IDS-With-Siem
+
 Dokumentasi Teknis TA
-1.	Install virtual machine seperti virtual box atau vmware
-2.	Install dan siapkan 4 ubuntu pada virtual machine
-3.	Install wazuh pada ubuntu, sebelum menginstall ubuntu pastikan 1 ubuntu untuk wazuh memenuhi system requirements wazuh
-    ![image](https://github.com/user-attachments/assets/a088f75a-5de5-41cb-926c-f8abbfe71cee)
-       curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
-  	
-5.	Buka wazuh dashboard pada browser lalu login dengan username dan password yang diberikan saat proses instalasi selesai
-6.	Install wazuh agent pada ketiga ubuntu lain nya, caranya tambahkan agent baru di wazuh dashboard lalu mengikuti istruksi yang diberikan
-7.	Setelah agent terinstal pada masing-masing ketiga ubuntu tersebut, maka install Snort IDS pada ubuntu misal untuk snort IDS yang terinstall di salah satu ubuntu diberi nama agent1. 
-    a.	sudo apt-get install snort -y
-    b.	Pada agent1 buka /etc/snort/snort.conf dengan nano scroll down ke step 6, uncomment output alert_syslog: LOG_AUTH LOG_ALERT
-    c.	Sudo systemctl restart snort
-8.	Tambahkan rules untuk mendeteksi serangan DDoS ke file /etc/snort/rules/local.rules rules bisa didapatkan di file Snort_ddos_rule
-9.	Tambahkan Wazuh Agent connection to ids hanya ambil yang untuk snort ke file ossec.conf di agent1 dibawah bagian Log analysis
-    ![image](https://github.com/user-attachments/assets/f618cc00-1df1-47da-b264-6c7bacccfd15)
 
-10.	Restart wazuh-agent systemctl restart wazuh-agent
-11.	Setelah agent terinstal pada masing-masing ketiga ubuntu tersebut, maka install Suricata IDS pada ubuntu misal untuk Suricata IDS yang terinstal di salah satu ubuntu diberi nama agent2. 
-    a.	sudo add-apt-repository ppa:oisf/suricata-stable 
-    b.	sudo apt-get update 
-    c.	sudo apt-get install suricata -y
-    d.	Edit Suricata setting pada /etc/suricata/suricata.yaml ubah di bagian
-   	
-        Linux high speed capture support
-        af-packet:
-          - interface: enp0s3
-        Interfance mewakili antarmuka jaringan yang ingin di pantau. Ganti nilainya dengan nama interface dari Ubuntu endpoint bisa di cek leawat ifconfig.
-   	
-    e.	Sudo systemctl restart snort
-12.	Tambahkan rules untuk mendeteksi serangan DDoS ke file /etc/suricata/rules/local.rules rules bisa didapatkan di file Suricata_ddos_rule, restart Kembali suricata
-13.	Tambahkan Wazuh Agent connection to ids hanya ambil yang untuk suricata ke file ossec.conf di agent2 didalam ossec_config
-    ![image](https://github.com/user-attachments/assets/9255a1d1-639a-4741-8fb6-19260f19fe77)
+## Langkah-Langkah Instalasi
 
-14.	Restart wazuh-agent untuk agent2 systemctl restart wazuh-agent
-15.	Setelah agent terinstal pada masing-masing ketiga ubuntu tersebut, maka install Zeek IDS pada ubuntu misal untuk Zeek IDS yang terinstall di salah satu ubuntu diberi nama agent3. 
-    a.	echo 'debhttp://download.opensuse.org/repositories/security:/zeek/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/security:zeek.list 
-    b.	curl -fsSL https://download.opensuse.org/repositories/security:zeek/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/security_zeek.gpg > /dev/null 
-    c.	sudo apt update 
-    d.	sudo apt install zeek-6.0 
-    e.	tambahkan file owlh.zeek dan detection.zeek pada folder /opt/zeek/share/zeek/site 
-    f.	load script owlh.zeek dan detection.zeek pada file local.zeek dan tambahkan pula agar ouput nya menjadi json seperti gambar di bawah ini
-         ![image](https://github.com/user-attachments/assets/f0306adc-e327-41ca-ab4e-686350e2c68b)
-    
-    g.	restart zeek dengan command zeekctl deploy
-16.	Tambahkan Wazuh Agent connection to ids hanya ambil yang untuk zeek ke file ossec.conf di agent3 didalam ossec_config
-    ![image](https://github.com/user-attachments/assets/210c1fc2-12d4-4e71-b568-63d276a70ee1)
+### 1. Persiapan
+1. Install virtual machine seperti VirtualBox atau VMware.
+2. Siapkan 4 mesin Ubuntu di dalam virtual machine.
 
-17.	Restart wazuh-agent untuk agent3 systemctl restart wazuh-agent
-18.	Tambahkan Zeek_ids_rule ke wazuh endpoint bisa diakses lewat wazuh-dashboard di bagian rules lalu ke custom rules maka akan ada file local.rules tambahkan ke file itu lalu save
-19.	Restart wazuh manager
-20.	Buat script python dan service
-    a.	Tambahkan AlertCorrelationScripts pada folder /var/ossec/integrations
-    b.	Lalu buat service salin service pada alert.service
-    c.	Tambahkan AlertCorrelationRule pada file local.rules di wazuh ubuntu endpoint, bisa diakses lewat wazuh-dashboard di bagian rules lalu ke custom rules maka akan ada file local.rules
-21.	Restart wazuh manager
-22.	Buatlah Service untuk Script Python AlertCorrelationScripts.py Di ubuntu yang sudah di install Wazuh Manager 
-23.	Simulasi penyerangan bisa dilakukan pada melalui kali linux dengan menggunakan hping3
-24.	Penginstalan banyak wazuh agent di tiap ubuntu endpoint merupakan system multi-agent
+### 2. Instalasi Wazuh Manager
+1. Install Wazuh pada salah satu Ubuntu. Pastikan mesin ini memenuhi sistem persyaratan untuk Wazuh.
 
+    ```bash
+    curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
+    ```
 
+2. Buka Wazuh dashboard pada browser dan login dengan username serta password yang diberikan setelah instalasi selesai.
 
+### 3. Instalasi Wazuh Agent
+1. Install Wazuh Agent pada tiga Ubuntu lainnya.
+2. Tambahkan agent baru di Wazuh dashboard dan ikuti instruksi yang diberikan untuk instalasi agent.
+
+### 4. Instalasi Snort IDS
+1. Install Snort IDS pada salah satu Ubuntu (misalnya, agent1):
+
+    ```bash
+    sudo apt-get install snort -y
+    ```
+
+2. Edit file konfigurasi Snort:
+
+    ```bash
+    sudo nano /etc/snort/snort.conf
+    ```
+   - Scroll ke bagian step 6 dan uncomment baris `output alert_syslog: LOG_AUTH LOG_ALERT`.
+
+3. Restart Snort:
+
+    ```bash
+    sudo systemctl restart snort
+    ```
+
+4. Tambahkan aturan untuk mendeteksi serangan DDoS pada file:
+
+    ```bash
+    /etc/snort/rules/local.rules
+    ```
+
+5. Tambahkan konfigurasi Snort ke file `ossec.conf` di agent1 di bagian **Log analysis**.
+
+6. Restart Wazuh Agent:
+
+    ```bash
+    sudo systemctl restart wazuh-agent
+    ```
+
+### 5. Instalasi Suricata IDS
+1. Install Suricata pada salah satu Ubuntu (misalnya, agent2):
+
+    ```bash
+    sudo add-apt-repository ppa:oisf/suricata-stable 
+    sudo apt-get update 
+    sudo apt-get install suricata -y
+    ```
+
+2. Edit file konfigurasi Suricata:
+
+    ```bash
+    sudo nano /etc/suricata/suricata.yaml
+    ```
+   - Ubah bagian berikut:
+
+    ```yaml
+    af-packet:
+      - interface: <nama_interface>
+    ```
+   - Ganti `<nama_interface>` dengan nama interface jaringan yang ingin dipantau (dapat diperiksa dengan `ifconfig`).
+
+3. Restart Suricata:
+
+    ```bash
+    sudo systemctl restart suricata
+    ```
+
+4. Tambahkan aturan DDoS pada file:
+
+    ```bash
+    /etc/suricata/rules/local.rules
+    ```
+
+5. Tambahkan konfigurasi Suricata ke file `ossec.conf` di agent2 di bagian **ossec_config**.
+
+6. Restart Wazuh Agent:
+
+    ```bash
+    sudo systemctl restart wazuh-agent
+    ```
+
+### 6. Instalasi Zeek IDS
+1. Install Zeek pada salah satu Ubuntu (misalnya, agent3):
+
+    ```bash
+    echo 'deb http://download.opensuse.org/repositories/security:/zeek/xUbuntu_22.04/ /' | sudo tee /etc/apt/sources.list.d/security:zeek.list
+    curl -fsSL https://download.opensuse.org/repositories/security:zeek/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/security_zeek.gpg > /dev/null
+    sudo apt update
+    sudo apt install zeek-6.0
+    ```
+
+2. Tambahkan file `owlh.zeek` dan `detection.zeek` ke folder:
+
+    ```bash
+    /opt/zeek/share/zeek/site
+    ```
+
+3. Muat script tersebut di file `local.zeek` dan tambahkan konfigurasi output JSON.
+
+4. Restart Zeek:
+
+    ```bash
+    zeekctl deploy
+    ```
+
+5. Tambahkan konfigurasi Zeek ke file `ossec.conf` di agent3 di bagian **ossec_config**.
+
+6. Restart Wazuh Agent:
+
+    ```bash
+    sudo systemctl restart wazuh-agent
+    ```
+
+### 7. Tambahkan Rules Custom ke Wazuh Endpoint
+1. Tambahkan `Zeek_ids_rule` ke file **local.rules** melalui Wazuh dashboard di bagian **Custom Rules**.
+2. Restart Wazuh Manager.
+
+### 8. Pembuatan Script Python dan Service
+1. Tambahkan `AlertCorrelationScripts.py` ke folder:
+
+    ```bash
+    /var/ossec/integrations
+    ```
+
+2. Buat service menggunakan file `alert.service`.
+3. Tambahkan `AlertCorrelationRule` ke file **local.rules** di Wazuh Ubuntu endpoint melalui Wazuh dashboard.
+4. Restart Wazuh Manager.
+
+### 9. Simulasi Penyerangan
+1. Gunakan Kali Linux untuk melakukan simulasi serangan dengan `hping3`.
+
+### 10. Multi-Agent Configuration
+1. Pastikan instalasi Wazuh Agent dilakukan pada setiap Ubuntu endpoint untuk konfigurasi sistem multi-agent.
