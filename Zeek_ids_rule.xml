@@ -1,0 +1,54 @@
+<group name="zeek,ids,">
+  <rule id="66005" level="5">
+    <field name="bro_engine">DCE_RPC</field>
+    <description>Zeek: DCE_RPC Logs</description>
+  </rule>
+  <rule id="66006" level="5">
+    <field name="bro_engine">DHCP</field>
+    <description>Zeek: DHCP Logs</description>
+  </rule>
+  <rule id="66007" level="5">
+    <field name="bro_engine">FILES</field>
+    <description>Zeek: FILES Logs</description>
+  </rule>
+  <rule id="66008" level="5">
+    <field name="bro_engine">HTTP</field>
+    <description>Zeek: HTTP Logs</description>
+  </rule>
+  <rule id="66009" level="5">
+    <field name="bro_engine">NOTICE</field>
+    <description>Zeek: NOTICE Logs</description>
+  </rule>
+  <rule id="66010" level="5">
+    <field name="bro_engine">NTLM</field>
+    <description>Zeek: NTLM Logs</description>
+  </rule>
+  <rule id="66011" level="5">
+    <field name="bro_engine">SMB_CMD</field>
+    <description>Zeek: SMB_CMD Logs</description>
+  </rule>
+  <rule id="66012" level="5">
+    <field name="bro_engine">SMB_FILES</field>
+    <description>Zeek: SMB_FILES Logs</description>
+  </rule>
+  <rule id="66013" level="5">
+    <field name="bro_engine">SMB_MAPPING</field>
+    <description>Zeek: SMB_MAPPING Logs</description>
+  </rule>
+  <rule id="66014" level="5">
+    <field name="bro_engine">SMTP</field>
+    <description>Zeek: SMTP Logs</description>
+  </rule>
+  <rule id="66015" level="5">
+    <field name="bro_engine">SNMP</field>
+    <description>Zeek: SNMP Logs</description>
+  </rule>
+  <rule id="66016" level="5">
+    <field name="bro_engine">SOFTWARE</field>
+    <description>Zeek: SOFTWARE Logs</description>
+  </rule>
+  <rule id="66017" level="5">
+    <field name="bro_engine">WEIRD</field>
+    <description>Zeek: WEIRD Logs</description>
+  </rule>
+</group>

@@ -1,0 +1,7 @@
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (flags: A; msg:"Possible ACK DDoS"; flow: stateless; threshold: type both, track by_dst, count 100000, seconds 10; sid:100001; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (flags: R; msg:"Possible RST DDoS"; flow: stateless; threshold: type both, track by_dst, count 100000, seconds 10; sid:100003; rev:1;)alert tcp $EXTERNAL_NET any -> $HOME_NET any (flags: F; msg:"Possible FIN DDoS"; flow: stateless; threshold: type both, track by_dst, count 100000, seconds 10; sid:100004; rev:1;)alert udp $EXTERNAL_NET any -> $HOME_NET any (msg:"Possible UDP DDoS"; flow: stateless; threshold: type both, track by_dst, count 100000, seconds 10; sid:100005; rev:1;)
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"Possible ICMP DDoS"; threshold: type both, track by_dst, count 100000, seconds 10; sid:100006; rev:1;)
+
+alert icmp any any -> any any (msg:"ICMP connection attempt:"; sid:1000010; rev:1;)
+
+alert tcp any any -> $HOME_NET 80 (threshold: type threshold, track by_dst, count 10000, seconds 60; msg:"Possible DDoS TCP SYN Flood attack detected"; sid:10000009; rev:1;)

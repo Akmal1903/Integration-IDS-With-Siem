@@ -1,0 +1,18 @@
+  <!-- snort -->
+  <localfile>
+    <log_format>snort-full</log_format>
+    <location>/var/log/snort/snort.alert.fast</location>
+  </localfile>
+
+  <!-- suricata -->
+  <localfile>
+    <log_format>json</log_format>
+    <location>/var/log/suricata/eve.json</location>
+  </localfile>
+
+  <!-- zeek -->
+  <localfile>
+    <log_format>syslog</log_format>.
+    <location>/opt/zeek/logs/current/notice.log</location>
+    <only-future-events>no</only-future-events>.
+  </localfile>

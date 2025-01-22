@@ -1,0 +1,7 @@
+<group name="local, ids">
+    <rule id="100500" level="14">
+        <decoded_as>json</decoded_as>
+        <field name="alert_correlation_description">\w+</field>
+        <description>DDoS Alert Correlation: $(alert_correlation_description)</description>
+    </rule>
+</group>

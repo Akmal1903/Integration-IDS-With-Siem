@@ -1,0 +1,44 @@
+module DDosAttacks;
+
+@load base/bif/plugins/Zeek_TCP.events.bif.zeek
+@load base/protocols/dns
+
+redef enum Notice::Type += {
+    SynFloodAttack
+};
+
+const syn_threshold: int = 6000;  # Threshold for triggering a notice
+
+# Track SYN counts and timing
+global syn_counter: count = 0;
+global last_reset_time: time = network_time();  # Track the last time the counter was reset
+
+# Function to generate SYN Flood attack notice
+function generate_ddos_notice(c:connection) {
+    NOTICE([$note = SynFloodAttack,
+            $msg = fmt("Possible DDoS SYN Flood Attack detected"),
+            $conn = c,
+            $uid = c$uid]);
+        syn_counter = 0;
+}
+
+# Event handler for SYN packets to count and detect SYN Flood
+event connection_SYN_packet(c: connection, pkt: SYN_packet) {
+    local now: time = network_time();
+
+    # Reset counter if the interval has passed
+    if (now - last_reset_time >= 60secs) {
+        syn_counter = 0;
+        last_reset_time = now;
+    }
+
+    # Increment the global SYN counter
+    syn_counter += 1;
+
+    # Generate notice if the threshold is reached
+    if (syn_counter >= syn_threshold) {
+        generate_ddos_notice(c);
+          # Reset the global counter after generating notice
+        }
+    print syn_counter;
+}

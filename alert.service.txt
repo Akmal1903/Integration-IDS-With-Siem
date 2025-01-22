@@ -1,0 +1,15 @@
+[Unit]
+Description=My test service
+After=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=/usr/bin/python3 /var/ossec/integrations/custom-scripts4.py /var/ossec/logs/alerts/alerts.json "http://webhook.url" debug
+WorkingDirectory=/home/siem
+User=root
+Environment=PYTHONUNBUFFERED=1
+
+
+[Install]
+WantedBy=multi-user.target

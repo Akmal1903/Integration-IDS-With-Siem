@@ -1,0 +1,6 @@
+# Output to JSON
+@load policy/tuning/json-logs.zeek
+
+@load owlh.zeek
+
+@load detection.zeek
