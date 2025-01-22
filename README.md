@@ -15,6 +15,9 @@ Dokumentasi Teknis TA
     curl -sO https://packages.wazuh.com/4.9/wazuh-install.sh && sudo bash ./wazuh-install.sh -a
     ```
 
+    ![image](https://github.com/user-attachments/assets/ef29a9e5-56c8-4828-9ab6-6819edd24989)
+
+
 2. Buka Wazuh dashboard pada browser dan login dengan username serta password yang diberikan setelah instalasi selesai.
 
 ### 3. Instalasi Wazuh Agent
@@ -48,6 +51,8 @@ Dokumentasi Teknis TA
     ```
 
 5. Tambahkan konfigurasi Snort ke file `ossec.conf` di agent1 di bagian **Log analysis**.
+
+    ![image](https://github.com/user-attachments/assets/2ef08224-d7fa-4556-b0f9-4224b70b28c7)
 
 6. Restart Wazuh Agent:
 
@@ -91,6 +96,8 @@ Dokumentasi Teknis TA
 
 5. Tambahkan konfigurasi Suricata ke file `ossec.conf` di agent2 di bagian **ossec_config**.
 
+    ![image](https://github.com/user-attachments/assets/596a6619-60fd-4d4d-ae4f-0478c72d3560)
+
 6. Restart Wazuh Agent:
 
     ```bash
@@ -115,6 +122,8 @@ Dokumentasi Teknis TA
 
 3. Muat script tersebut di file `local.zeek` dan tambahkan konfigurasi output JSON.
 
+    ![image](https://github.com/user-attachments/assets/b0fd0e52-3ae7-4392-a403-9581a50ac7d5)
+
 4. Restart Zeek:
 
     ```bash
@@ -123,7 +132,9 @@ Dokumentasi Teknis TA
 
 5. Tambahkan konfigurasi Zeek ke file `ossec.conf` di agent3 di bagian **ossec_config**.
 
-6. Restart Wazuh Agent:
+   ![image](https://github.com/user-attachments/assets/ce28fd42-d6ad-4c56-88c7-18ce77395674)
+
+7. Restart Wazuh Agent:
 
     ```bash
     sudo systemctl restart wazuh-agent
